@@ -4,17 +4,6 @@
 
 
 
-int next_floor(){
-	for (int n=1; n<3 ;n++){
-		if (command[n]==1){
-			if (current_floor()<n){hardware_command_movement(HARDWARE_MOVEMENT_UP)}
-			if (current_floor()>n){hardware_command_movement(HARDWARE_MOVEMENT_DOWN)}
-			else {}
-		}
-
-	}
-
-
 
 void queue_add(Elevator* elevator, int floor, int button ){
 	elevator->queue[floor][button]=1;
@@ -32,6 +21,69 @@ void queue_remove(Elevator* elevator){
 	
 }
 
+
+
+
+int next_floor(Elevator* elevator){
+	int next_f = -1;
+	int orders[HARDWARE_NUMBER_OF_FLOORS];
+	HardwareMovement last_direction;
+
+	while(1){	
+		if (elevator->current_driection == HARDWARE_MOVEMENT_UP) {
+			last_direction=HARDWARE_MOVEMENT_UP;
+			if(queue[elevator->current_floor][0]==1){
+				next_f=elevator->current_floor;
+			}
+		}
+		if (elevator->current_driection == HARDWARE_MOVEMENT_DOWN){
+			last_direction=HARDWARE_MOVEMENT_DOWN;
+			if(queue[elevator->current_floor][2]==1){
+				next_f=elevator->current_floor;
+			}
+		}
+	}
+	
+	while (1) {
+		for (int f=0; f = < HARDWARE_NUMBER_OF_FLOORS; f++) {
+			for (int o; o = < Nr_ordertypes; o++) {
+				if (elevator->queue[f][o]==0){
+					next_f=-1;
+				}
+
+				if (elevator->current_directon == HARDWARE_MOVEMENT_STOP){
+					if (elevator->current_floor==3 && elevator->queue[f][o]==1){
+						next_f=f;
+						break; //hvor langt ut breaker den her ???
+					}
+					if (elevator->current_floor==0 && elevator->queue[f][o]==1){
+						next_f=f;
+						break; //hvor langt ut breaker den her ???
+					}
+				
+					if (last_direction==HARDWARE_MOVEMENT_UP && elevator->queue[f][0]==1 && elevator->current_floor<f){
+						next_f=f;
+					}
+					else if (last_direction==HARDWARE_MOVEMENT_UP && elevator->queue[f][2]==1 && elevator->current_floor<f){
+						next_f=f
+					}
+					if (last_direction==HARDWARE_MOVEMENT_DOWN && elevator->queue[f][2]==1 && elevator->current_floor>f){
+						next_f=f;
+					}
+					else if (last_direction==HARDWARE_MOVEMENT_DOWN && elevator->queue[f][0]==1 && elevator->current_floor>f){
+						next_f=f;
+					}
+					
+				}
+				
+
+			}
+		
+		}
+
+	}
+	return next_f;
+}
 
 
 

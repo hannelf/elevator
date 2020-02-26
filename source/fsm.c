@@ -14,10 +14,26 @@ Elevator elevator;
 
 
 
+void move_to_next_floor(Elevator* elevator) {
+	int current_f = elevator->current_floor;
+	int next_f= next_floor(elevator);
+	While (current_f<next_f){
+		hardware_command_movement(HARDWARE_MOVEMENT_UP);
+	}
+	While (current_f>next_f){
+		hardware_command_movement(HARDWARE_MOVEMENT_DOWN);
+	}
+
+	while (current_f==next_f){
+		hardware_command_movement(HARDWARE_MOVEMENT_STOP);
+	}
+	
+}
 
 
 
-void current_floor(){
+
+void current_floor(Elevator* elevator){
 	int floor=-1;
 	for (int n=0; n=<HARDWARE_NUMBER_OF_FLOORS; n++){
 		if (hardware_read_floor_sensor(n)==1){
@@ -25,13 +41,11 @@ void current_floor(){
 		}
 	}
 	hardware_command_floor_indicator_on(n)
-	elevator->current_floor=n;
-
-	
+	*elevator->current_floor=floor;
 }
 
 
-void initialize(){
+void initialize(Elevator* elevator){
 	while (current_floor()==-1){
 		hardware_command_movement(HARDWARE_ORDER_DOWN);
 		}
@@ -81,7 +95,7 @@ void poll_order(){
 
 
 
-int fsm(){
+int fsm(Elevator* elevator){
 	//trenger å definere current_state=state eller noe
 while(1)
 	switch (current_state){
