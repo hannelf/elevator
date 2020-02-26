@@ -13,19 +13,21 @@ Elevator elevator;
 
 
 
-
-void move_to_next_floor(Elevator* elevator) {
+int move_to_next_floor(Elevator* elevator) {
 	int current_f = elevator->current_floor;
 	int next_f= next_floor(elevator);
-	While (current_f<next_f){
+	while (current_f<next_f){
 		hardware_command_movement(HARDWARE_MOVEMENT_UP);
+		return 0;
 	}
-	While (current_f>next_f){
+	while (current_f>next_f){
 		hardware_command_movement(HARDWARE_MOVEMENT_DOWN);
+		return 0;
 	}
 
 	while (current_f==next_f){
 		hardware_command_movement(HARDWARE_MOVEMENT_STOP);
+		return 1;
 	}
 	
 }
@@ -100,16 +102,16 @@ int fsm(Elevator* elevator){
 while(1)
 	switch (current_state){
 		case IDLE:
-			update_floor();
 			poll_order();
 			if (hardware_read_stop_signal()){
 				current_state = STOP;
 				break;
 			}
-			else if (hardware_read_order()){
-				if (hvis den er i samme etasje som order_down/up ) {
-					current_state = LOADING
-				}
+			if (next_floor(elevator)==-1){
+				current_state = IDLE;
+			}
+			if (next_floor(elevator)!=)-1{
+				current_state=MOVING;
 			}
 	
 		case MOVING:
@@ -118,15 +120,12 @@ while(1)
 				break;
 			}
 			poll_order();
-			else if (bestilling er til en etasje under current_floor){
-				HARDWARE_MOVEMENT_DOWN;
+	
+			while (move_to_next_floor(elevator*)){ //peker riktig?
+				current_state= LOADING;
 			}
-			else if (bestilling er til etasje over current_floor){
-				HARDWARE_MOVEMENT_UP;
-			}
-			else if (inside_order er til en etasje under current floor){
-				
-			}
+			
+			
 
 		case LOADING:
 			if (hardware_read_stop_signal()){
